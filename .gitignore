@@ -1,0 +1,15 @@
+# IntelliJ project files
+.idea/
+GSGP-WeightedFitness.iml
+
+# Runnable files
+out/
+
+# Project outputs folder
+outputs/
+
+# Configuration files
+config_files/
+
+# Misc
+.DS_Store
