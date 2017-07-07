@@ -43,11 +43,20 @@ public class SimplePopulator extends Populator{
             fitnessFunction.resetFitness(dataType, expData);
             Dataset dataset = expData.getDataset(dataType);
             int instanceIndex = 0;
+            double sumWeights = 0;
             for (Instance instance : dataset) {
                 double estimated = newTree.eval(instance.input);
-                fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++, dataType);
+                if (dataType == DatasetType.TRAINING) {
+                    double instanceWeight = expData.getTrainingWeights()[instanceIndex];
+                    fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++,
+                            DatasetType.TRAINING, instanceWeight);
+                    sumWeights += instanceWeight;
+                } else {
+                    fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++, DatasetType.TEST);
+                }
             }
-            fitnessFunction.computeFitness(dataType);
+            if (dataType == DatasetType.TRAINING) fitnessFunction.computeFitness(DatasetType.TRAINING, sumWeights);
+            else fitnessFunction.computeFitness(DatasetType.TEST);
         }
         return fitnessFunction;
     }

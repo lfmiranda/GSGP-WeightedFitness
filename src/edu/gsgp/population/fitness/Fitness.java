@@ -116,7 +116,9 @@ public abstract class Fitness{
      */
     public abstract void resetFitness(DatasetType dataType, ExperimentalData datasets);
     public abstract void setSemanticsAtIndex(double estimated, double desired, int index, DatasetType dataType);
+    public abstract void setSemanticsAtIndex(double estimated, double desired, int index, DatasetType dataType, double weight);
     public abstract void computeFitness(DatasetType dataType);
+    public abstract void computeFitness(DatasetType dataType, double sumWeights);
     
     public abstract Fitness softClone();
     public abstract double getTrainingFitness();

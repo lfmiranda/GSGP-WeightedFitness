@@ -17,15 +17,17 @@ import edu.gsgp.Utils.DatasetType;
 public class ExperimentalData {
     private Dataset training;
     private Dataset test;
+    private Double[] trainingWeights;
 
     public ExperimentalData(){
         training = new Dataset();
         test = new Dataset();
     }
 
-    public ExperimentalData(Dataset training, Dataset test) {
+    public ExperimentalData(Dataset training, Dataset test, Double[] trainingWeights) {
         this.training = training;
         this.test = test;
+        this.trainingWeights = trainingWeights;
     }    
     
     /**
@@ -42,6 +44,14 @@ public class ExperimentalData {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Return the array of weights associated to the training instances.
+     * @return An array containing all the weights
+     */
+    public Double[] getTrainingWeights() {
+        return trainingWeights;
     }
 
     public void setDataset(Dataset dataset, DatasetType dataType) {

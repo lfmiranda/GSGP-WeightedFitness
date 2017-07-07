@@ -123,14 +123,14 @@ public class HoldoutHandler implements DataProducer{
     }
 
     @Override
-    public void setDataset(String trainingPath, String testPath) throws Exception{
+    public void setDataset(String trainingPath, String testPath, String weightFilesPath) throws Exception{
 //        if(!useFiles){
 //            Dataset data = DataReader.readInputDataFile(dataPath);
 //            this.dataset = data;
 //            numInputs = data.getInputNumber();
 //        }
 //        else{
-            getFromFile(trainingPath, testPath);
+            getFromFile(trainingPath, testPath, weightFilesPath);
 //        }
     }
 
@@ -150,11 +150,12 @@ public class HoldoutHandler implements DataProducer{
      * Get a list of partitions test/training from a file pattern for holdout
      * @param trainingPath Path for the (training) dataset used
      * @param testPath Path for the (test) dataset used
+     * @param weightFilesPath Path for the file containing the weight values of the training instances
      * @return The number of inputs of the dataset
      * @throws Exception Error while reading the dataset within a file.
      * @throws SSRException Error in the file path/pattern.
      */
-    private void getFromFile(String trainingPath, String testPath) throws Exception{
+    private void getFromFile(String trainingPath, String testPath, String weightFilesPath) throws Exception{
         int lastFileSeparator = trainingPath.lastIndexOf(File.separator);
         String filePattern = trainingPath.substring(lastFileSeparator + 1);
         String trainingFolder = trainingPath.substring(0, lastFileSeparator);
@@ -194,10 +195,13 @@ public class HoldoutHandler implements DataProducer{
             throw new Exception("No files found for this file pattern/path: \"" + newTrain.getAbsolutePath() + "\" and \"" + newTest.getAbsolutePath() +  "\"\nUsing HOLDOUT.\n");
         if(trainFiles.size() != testFiles.size())
             throw new Exception("The number of test and training files is different. Check if the names are correct.\n");
-        
+
         datasetFromFiles = new ExperimentalData[trainFiles.size()];
+        String[] weightFilesPathTokens = weightFilesPath.split("#");
         for(int i = 0; i < datasetFromFiles.length; i++){
-            datasetFromFiles[i] = new ExperimentalData(DataReader.readInputDataFile(trainFiles.get(i)), DataReader.readInputDataFile(testFiles.get(i)));
+            String weightFilePath = weightFilesPathTokens[0] + i + weightFilesPathTokens[1];
+            datasetFromFiles[i] = new ExperimentalData(DataReader.readInputDataFile(trainFiles.get(i)),
+                    DataReader.readInputDataFile(testFiles.get(i)), DataReader.readWeightFile(weightFilePath));
 //            datasetFromFiles[i].training = DataReader.readInputDataFile(trainFiles.get(i));
 //            datasetFromFiles[i].test = DataReader.readInputDataFile(testFiles.get(i));
         }

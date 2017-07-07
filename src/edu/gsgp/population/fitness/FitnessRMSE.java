@@ -51,17 +51,42 @@ public class FitnessRMSE extends Fitness{
         ctrSumSquarError = 0;
         setSemantics(datasets.getDataset(dataType).size(), dataType);
     }
-    
+
     @Override
     public void setSemanticsAtIndex(double estimated, double desired, int index, DatasetType dataType){
+        assert (dataType != DatasetType.TRAINING) :
+                "wrong method called. The instance weight must be taken into account in the training set.";
+
         getSemantics(dataType)[index] = estimated;
         double error = estimated - desired;
         ctrSumSquarError += error * error;
     }
-    
+
+    @Override
+    public void setSemanticsAtIndex(double estimated, double desired, int index, DatasetType dataType, double weight){
+        assert (dataType != DatasetType.TEST) :
+                "wrong method called. The instance weight cannot be taken into account in the test set.";
+
+        getSemantics(dataType)[index] = estimated;
+        double error = estimated - desired;
+        ctrSumSquarError += weight * error * error;
+    }
+
     @Override
     public void computeFitness(DatasetType dataType){
+        assert (dataType != DatasetType.TRAINING) :
+                "wrong method called. Weights must be taken into account in the training set.";
+
         double rmse = Math.sqrt(ctrSumSquarError/getSemantics(dataType).length);
+        setRMSE(rmse, dataType);
+    }
+
+    @Override
+    public void computeFitness(DatasetType dataType, double sumWeights){
+        assert (dataType != DatasetType.TEST) :
+                "wrong method called. Weights cannot be taken into account in the test set.";
+
+        double rmse = Math.sqrt(ctrSumSquarError / (getSemantics(dataType).length * sumWeights));
         setRMSE(rmse, dataType);
     }
 

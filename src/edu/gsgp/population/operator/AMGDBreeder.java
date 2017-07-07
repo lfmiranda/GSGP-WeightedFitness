@@ -102,7 +102,7 @@ public class AMGDBreeder extends MGDBreeder{
                     }
                         
                 }
-                
+
                 // The semantic value for this dimension should be greater than the target
                 if(numIndGreaterTarget[i] < numIndLessTarget[i]){
                     // This is an upper bound unless...
@@ -135,6 +135,7 @@ public class AMGDBreeder extends MGDBreeder{
             else 
                 semInd =  ind.getTestSemantics();
             int instanceIndex = 0;
+            double sumWeights = 0;
             for (Instance instance : dataset) {
                 double estimated;
                 if(type == GDTypes.ADDITIVE){
@@ -143,9 +144,17 @@ public class AMGDBreeder extends MGDBreeder{
                 else{
                     estimated = semInd[instanceIndex] * alpha;
                 }
-                fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++, dataType);
+                if (dataType == DatasetType.TRAINING) {
+                    double instanceWeight = expData.getTrainingWeights()[instanceIndex];
+                    fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++,
+                            DatasetType.TRAINING, instanceWeight);
+                    sumWeights += instanceWeight;
+                } else {
+                    fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++, DatasetType.TEST);
+                }
             }
-            fitnessFunction.computeFitness(dataType);
+            if (dataType == DatasetType.TRAINING) fitnessFunction.computeFitness(DatasetType.TRAINING, sumWeights);
+            else fitnessFunction.computeFitness(DatasetType.TEST);
         }
         return fitnessFunction;
     }

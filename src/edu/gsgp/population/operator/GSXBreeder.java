@@ -51,13 +51,22 @@ public class GSXBreeder extends Breeder{
                 semInd2 = ind2.getTestSemantics();
             }
             int instanceIndex = 0;
+            double sumWeights = 0;
             for (Instance instance : dataset) {
                 double rtValue = Utils.sigmoid(randomTree.eval(instance.input));
 //                double estimated = rtValue*ind1.getTrainingSemantics()[instanceIndex] + (1-rtValue)*ind2.getTrainingSemantics()[instanceIndex];
                 double estimated = rtValue*semInd1[instanceIndex] + (1-rtValue)*semInd2[instanceIndex];
-                fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++, dataType);
+                if (dataType == DatasetType.TRAINING) {
+                    double instanceWeight = expData.getTrainingWeights()[instanceIndex];
+                    fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++,
+                            DatasetType.TRAINING, instanceWeight);
+                    sumWeights += instanceWeight;
+                } else {
+                    fitnessFunction.setSemanticsAtIndex(estimated, instance.output, instanceIndex++, DatasetType.TEST);
+                }
             }
-            fitnessFunction.computeFitness(dataType);
+            if (dataType == DatasetType.TRAINING) fitnessFunction.computeFitness(DatasetType.TRAINING, sumWeights);
+            else fitnessFunction.computeFitness(DatasetType.TEST);
         }
         return fitnessFunction;
     }

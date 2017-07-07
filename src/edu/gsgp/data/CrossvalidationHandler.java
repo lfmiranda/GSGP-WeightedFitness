@@ -76,7 +76,7 @@ public class CrossvalidationHandler implements DataProducer{
     }
 
     @Override
-    public void setDataset(String trainingPath, String testPath) throws Exception{
+    public void setDataset(String trainingPath, String testPath, String weightFilesPath) throws Exception{
 //        if(!useFiles){
 //            Dataset data = DataReader.readInputDataFile(dataPath);
 //            this.dataset = data;

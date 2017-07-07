@@ -25,9 +25,10 @@ public interface DataProducer {
      * Sets a dataset path
      * @param trainingPath Path for the (training) dataset used
      * @param testPath Path for the (test) dataset used
+     * @param weightFilesPath Path for the file containing the weight values of the training instances
      * @throws java.lang.Exception Exception caused when reading dataset file(s)
      */
-    public void setDataset(String trainingPath, String testPath) throws Exception;
+    public void setDataset(String trainingPath, String testPath, String weightFilesPath) throws Exception;
     
     /**
      * Sets the random number generator

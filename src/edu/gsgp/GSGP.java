@@ -47,6 +47,9 @@ public class GSGP {
         
         for(int i = 0; i < properties.getNumGenerations() && !canStop; i++){
             System.out.println("Generation " + (i+1) + ":");
+
+            assert (expData.getDataset(Utils.DatasetType.TRAINING).size() == expData.getTrainingWeights().length) :
+                    "for each fold, the number of weights read should be equals to the number of training instances.";
                         
             // Evolve a new Population
             Population newPopulation = pipe.evolvePopulation(population, expData, properties.getPopulationSize()-1);

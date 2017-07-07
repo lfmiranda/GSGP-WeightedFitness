@@ -147,6 +147,7 @@ public class PropertiesManager {
         PARENT_FILE("parent", "Path to the parent parameter file. The child parameters overwrite the parent", false),
         PATH_DATA_FILE("experiment.data", "Path for the training/test files. See experiment.sampling option for more details", true),
         PATH_TEST_FILE("experiment.data.test", "Path for the test files. See experiment.sampling option for more details", false),
+        PATH_WEIGHT_FILE("experiment.weight.file", "Path for the file containing the weight values of the training instances", true),
         PATH_OUTPUT_DIR("experiment.output.dir", "Output directory", false),
         SEED("experiment.seed", "Seed (long int) used by the pseudo-random number generator", false),
         FILE_PREFIX("experiment.file.prefix", "Identifier prefix for files", false),
@@ -302,7 +303,10 @@ public class PropertiesManager {
             default:
                 throw new Exception("Experiment design must be crossvalidation or holdout.");
         }
-        dataProducer.setDataset(getStringProperty(ParameterList.PATH_DATA_FILE, true), getStringProperty(ParameterList.PATH_TEST_FILE, true));
+        dataProducer.setDataset(
+                getStringProperty(ParameterList.PATH_DATA_FILE, true),
+                getStringProperty(ParameterList.PATH_TEST_FILE, true),
+                getStringProperty(ParameterList.PATH_WEIGHT_FILE, true));
         return dataProducer;
     }
     
