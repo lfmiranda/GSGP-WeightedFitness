@@ -86,7 +86,7 @@ public class FitnessRMSE extends Fitness{
         assert (dataType != DatasetType.TEST) :
                 "wrong method called. Weights cannot be taken into account in the test set.";
 
-        double rmse = Math.sqrt(ctrSumSquarError / (getSemantics(dataType).length * sumWeights));
+        double rmse = Math.sqrt(ctrSumSquarError / sumWeights);
         setRMSE(rmse, dataType);
     }
 
