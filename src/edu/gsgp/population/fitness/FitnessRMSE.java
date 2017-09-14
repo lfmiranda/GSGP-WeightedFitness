@@ -69,7 +69,7 @@ public class FitnessRMSE extends Fitness{
 
         getSemantics(dataType)[index] = estimated;
         double error = estimated - desired;
-        ctrSumSquarError += weight * error * error;
+        ctrSumSquarError += Math.pow(weight * error, 2);
     }
 
     @Override
@@ -86,7 +86,9 @@ public class FitnessRMSE extends Fitness{
         assert (dataType != DatasetType.TEST) :
                 "wrong method called. Weights cannot be taken into account in the test set.";
 
-        double rmse = Math.sqrt(ctrSumSquarError / sumWeights);
+        assert (Math.round(sumWeights) == 1) : "weights values must sum up to 1.";
+
+        double rmse = Math.sqrt(ctrSumSquarError);
         setRMSE(rmse, dataType);
     }
 
